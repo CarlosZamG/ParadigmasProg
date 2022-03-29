@@ -49,7 +49,7 @@ int main(){
     numActual = omp_get_num_threads();
     printf("\nNúmero actual de hilos: %d \n", numActual);
 
-    //Como estamos afuera de la región crítica el número de hilos es 1
+    //Como estamos afuera de la región paralela el número de hilos es 1
 
     #pragma omp parallel shared(numActual)
     {
@@ -80,7 +80,7 @@ int main(){
     
     numActual = omp_get_num_threads();
     printf("\nNúmero actual de hilos: %d \n", numActual);
-    //Como estamos afuera de la región crítica el número de hilos es 1
+    //Como estamos afuera de la región paralela el número de hilos es 1
 
     #pragma omp parallel shared(numActual)
     {
