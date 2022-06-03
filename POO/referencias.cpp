@@ -107,7 +107,7 @@ int main(){
     cout << "El valor de b es:" << b << endl;
     cout << "Intercambiando ... " << endl;
     intercambio(a,b);
-    //intercambio(3,4); Marca error porque espera una referencia, NO valores enteros
+    //intercambio(3,4); Marca error porque espera una varable o un objeto, NO valores enteros
     cout << "El valor de a es:" << a << endl;
     cout << "El valor de b es:" << b << endl << endl;
 
