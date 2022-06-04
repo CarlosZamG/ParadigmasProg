@@ -33,6 +33,7 @@ class entero
 private:
     int numero;
 public:
+    entero(){numero=0;}
     entero(int numero){ this->numero=numero;}
     int get_numero(){return numero;}
     void set_numero(int numero){this->numero=numero;}
@@ -89,11 +90,15 @@ int main(){
     entero var(7);
     entero& ref2var = var;
     entero var2var = var;
+    entero prueba;
+
+
+    cout << "El valor de prueba es " << prueba <<endl;
 
     cout << "El valor de var es:" << var << endl;
     cout << "El valor de ref2var es:" << ref2var << endl;
     cout << "El valor de var2var es:" << var2var << endl << endl;
-   
+    
     //entero& ref; Marca un error diciendo que la referncia no está inicializada
     //entero& ref(4); Marca error
     //entero& ref = new entero(10); Marca error
