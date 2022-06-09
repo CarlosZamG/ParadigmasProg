@@ -20,7 +20,9 @@ class fraccion{
     friend fraccion operator+(fraccion f1, int z);
     friend fraccion operator-(fraccion f1);
     friend fraccion operator-(fraccion f1,fraccion f2);
-    //friend fraccion operator-(fraccion f1);
+    friend fraccion operator-(fraccion f1, int z);
+    friend fraccion operator-(int z, fraccion f1);
+    friend fraccion operator*(fraccion f1, fraccion f2);
 };
 
     /*
@@ -207,12 +209,58 @@ fraccion operator+(fraccion f, int z){
     return zf + f;
 
 }
+/*
+Sobrecargamos el operador unario '-' para que nos devuelva el inverso aditivo de la fracción
 
+    fraccion f(2,9);
+    fraccion f2(-3,4);
+
+    fraccion inv = -f;
+    cout << inv << endl;
+    inv = - f2;
+    cout << inv << endl;
+
+
+    Salida:
+    -2/9
+    3/4
+
+    fraccion cero(0,5);
+    fraccion inv = -cero;
+    cout << inv << endl;
+
+    Salida:
+    0/1     
+
+    El inverso de la fracción cero (0/1) es el mismo
+
+*/
 fraccion operator-(fraccion f1){
 
     fraccion nf = *new fraccion(-(f1.numerador),f1.denominador);
     return nf;
 }
+
+/*
+Sobrecargamos el operador '-' para hacer la resta entre fracciones:
+
+    fraccion f1(4,5);
+    fraccion f2(14,15) ;
+    fraccion res = f1 - f2;
+    cout << f1 << " - (" << f2<<") = " << res << endl;
+
+    Salida: 
+    4/5 - (14/15) = -2/15
+
+    
+    
+    fraccion f(3,5);
+    cout << f << " - (" << f<<") = " << f-f << endl;
+
+    Salida:
+    3/5 - (3/5) = 0/1
+
+*/
 
 fraccion operator-(fraccion f1,fraccion f2){
 
@@ -220,45 +268,51 @@ fraccion operator-(fraccion f1,fraccion f2){
 
 }
 
+/*
+La resta también es válida para un entero menos una fracción y una fracción menos un entero:
+
+    fraccion f(10,3);
+    cout << f << " - (" << 2 <<") = " << f-2 << endl;
+    fraccion f2(1,3);
+    cout << 5<< " - (" << f2 <<") = " << 5-f2 << endl;
+
+
+    Salida:
+    10/3 - (2) = 4/3
+    5 - (1/3) = 14/3
+
+*/
+fraccion operator-(fraccion f1, int z){
+    
+    fraccion zf = *new fraccion(z);
+    return f1 - zf;
+}
+
+
+fraccion operator-(int z, fraccion f1){
+
+    fraccion zf = *new fraccion(z);
+    return  zf - f1;
+
+}
+
+
+fraccion operator*(fraccion f1, fraccion f2){
+
+    int num = f1.numerador * f2.numerador;
+    int den = f1.denominador * f2.denominador;
+    fraccion ret =*new fraccion(num, den);
+    return ret;
+
+}
 
 int main()
 {    
-    fraccion f(4,9);
-    fraccion res2 = 5 + f;
-    cout << 5 << " + " << f << " = " << res2 << endl;
+    fraccion f1(4,3);
+    fraccion f2(2,1);
+    cout << f1 << " * " << f2 <<" = " << f1 * f2 << endl;
 
 
-    /*
-    fraccion& r1 = *new fraccion(45,35);
-    fraccion& r2 = *new fraccion(25,35);
-    
-    //Probamos la salida y la suma de dos fracciones
-    cout << r1 <<" + " << r2 << " = " << (r1+r2) << endl;
-    
-    //Creamos la fracción 0
-    fraccion& cero = *new fraccion(0,33);
-    cout << cero << endl;
 
-     
-    fraccion& z = *new fraccion(5);
-    cout <<"Entero: " <<z << endl;
-    z = *new fraccion(-3);
-    cout <<"Entero negativo: " << z <<endl;
-
-    //Probamos la suma con enteros
-    cout << r1 <<" + 5 = "<< (r1 + 5) << endl;
-    cout <<"3 +  " << r1 <<" = "<< (3 + r1) << endl;
-
-    //Probamos el operador unario menos(-)
-    cout << -r2 << endl;
-    fraccion& fracp = *new fraccion(-9,-36);
-    cout << "Prueba: "<<fracp << endl; 
-
-    //Probamos el operador binario menos(-)
-    cout << r1 <<" - " << r2 << " = " << (r1-r2) << endl;
-
-    //Error al dividir entre 0
-    //fraccion& e = *new fraccion(25,0);
-    */
 
 }
