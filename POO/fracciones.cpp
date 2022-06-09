@@ -23,6 +23,12 @@ class fraccion{
     friend fraccion operator-(fraccion f1, int z);
     friend fraccion operator-(int z, fraccion f1);
     friend fraccion operator*(fraccion f1, fraccion f2);
+    friend fraccion operator*(fraccion f1, int z);
+    friend fraccion operator*(int z, fraccion f1);
+    friend fraccion operator/(fraccion f1, fraccion f2);
+    friend fraccion operator/(fraccion f1, int z);
+    friend fraccion operator/(int z, fraccion f1);
+
 };
 
     /*
@@ -135,7 +141,7 @@ void fraccion::simplificar(){
 }
 
 /*
-Sobrecargamos el operador '<<' para poder mostrar en consola a la fracción de la forma: numerador/denominador
+Se sobrecargó el operador '<<' para poder mostrar en consola a la fracción de la forma: numerador/denominador
 
     fraccion frac(5,4);
     cout <<"La fración es: "<< frac << endl;
@@ -153,7 +159,7 @@ ostream& operator <<(ostream& flujo, fraccion frac){
 
 
 /*
-Sobrecargamos el operador '+' para poder hacer la suma entre fracciones expresiva
+Se sobrecargó el operador '+' para poder hacer la suma entre fracciones expresiva
 
     fraccion f1(6,7);
     fraccion f2(5,4);
@@ -210,7 +216,7 @@ fraccion operator+(fraccion f, int z){
 
 }
 /*
-Sobrecargamos el operador unario '-' para que nos devuelva el inverso aditivo de la fracción
+Se sobrecargó el operador unario '-' para que nos devuelva el inverso aditivo de la fracción
 
     fraccion f(2,9);
     fraccion f2(-3,4);
@@ -242,7 +248,7 @@ fraccion operator-(fraccion f1){
 }
 
 /*
-Sobrecargamos el operador '-' para hacer la resta entre fracciones:
+Se sobrecargó el operador '-' para hacer la resta entre fracciones:
 
     fraccion f1(4,5);
     fraccion f2(14,15) ;
@@ -296,7 +302,33 @@ fraccion operator-(int z, fraccion f1){
 
 }
 
+/*
+Se sobrecargó el operador '*' para hacer la multiplicación de fracciones:
 
+    fraccion f1(3,4);
+    fraccion f2(6,4);
+    cout << f1 << " * " << f2 <<" = " << f1 * f2 << endl;
+    
+    Salida:
+    3/4 * 3/2 = 9/8
+
+
+    fraccion f1(1,-4);
+    fraccion f2(-5,2);
+    cout << f1 << " * " << f2 <<" = " << f1 * f2 << endl;
+
+    Salida:
+    -1/4 * -5/2 = 5/8
+
+    fraccion f1(1,4);
+    fraccion f2(0,8);
+    cout << f1 << " * " << f2 <<" = " << f1 * f2 << endl;
+
+    Salida:
+    1/4 * 0/1 = 0/1
+
+
+*/
 fraccion operator*(fraccion f1, fraccion f2){
 
     int num = f1.numerador * f2.numerador;
@@ -306,13 +338,123 @@ fraccion operator*(fraccion f1, fraccion f2){
 
 }
 
+/*
+También se puede hacer la multiplicación con enteros:
+
+    fraccion f1(1,5);
+    cout << f1 << " * " << 3 <<" = " << f1 * 3 << endl;
+    cout << 8 << " * " << f1 <<" = " <<  8 * f1  << endl;
+    cout << 0 << " * " << f1 <<" = " <<  0 * f1  << endl;
+
+    Salida:
+    1/5 * 3 = 3/5
+    8 * 1/5 = 8/5
+    0 * 1/5 = 0/1
+
+*/
+
+fraccion operator*(fraccion f1, int z){
+
+    fraccion zf = *new fraccion(z);
+    return  zf * f1;
+
+}
+
+fraccion operator*(int z, fraccion f1){
+
+    fraccion zf = *new fraccion(z);
+    return  zf * f1;
+
+}
+
+/*
+Se sobrecargó el operador '/' para hacer la división entre fracciones:
+
+    fraccion f1(1,5);
+    fraccion f2(7,3);
+    cout << f1 << " / (" << f2 <<") = " << f1 / f2 << endl;
+
+    Salida:
+    1/5 / (7/3) = 3/35
+
+    
+    fraccion f1(0,5);
+    fraccion f2(2,3);
+    cout << f1 << " / (" << f2 <<") = " << f1 / f2 << endl;
+
+    Salida:
+    0/1 / (2/3) = 0/1
+
+
+    fraccion f1(2,5);
+    fraccion f2(0,4);
+    cout << f1 << " / (" << f2 <<") = " << f1 / f2 << endl;
+    
+    Salida:
+    terminate called after throwing an instance of 'std::runtime_error'
+        what():  ERROR MATEMÁTICO: NO SE PUEDE DIVIDIR ENTRE CERO
+
+    Aborted
+
+*/
+
+fraccion operator/(fraccion f1, fraccion f2){
+
+    int num = f1.numerador * f2.denominador;
+    int den = f1.denominador * f2.numerador;
+    fraccion ret = *new fraccion(num, den);
+    return ret;
+    
+
+
+}
+
+/*
+También es válida la división entre un entero y una fracción ó una fracción y un entero:
+
+    fraccion f1(2,5);
+    cout << f1 << " / " << 2 <<" = " << f1 / 2 << endl;
+    cout << 2 << " / " << f1 <<" = " << 2 / f1 << endl;
+
+    Salida: 
+    2/5 / 2 = 1/5
+    2 / 2/5 = 5/1
+
+
+    fraccion f1(0,5);
+    cout << f1 << " / " << 9 <<" = " << f1 / 9 << endl;
+
+    Salida:
+    0/1 / 9 = 0/1
+
+    
+    fraccion f1(2,5);
+    cout << f1 << " / " << 0 <<" = " << f1 / 0 << endl;
+
+    Salida:
+    terminate called after throwing an instance of 'std::runtime_error'
+        what():  ERROR MATEMÁTICO: NO SE PUEDE DIVIDIR ENTRE CERO
+
+    Aborted
+
+*/
+fraccion operator/(fraccion f1, int z){
+
+    fraccion zf = *new fraccion(z);
+    return f1 / zf;
+
+}
+
+fraccion operator/(int z, fraccion f1){
+
+    fraccion zf = *new fraccion(z);
+    return  zf / f1;
+
+}
+
 int main()
 {    
-    fraccion f1(4,3);
-    fraccion f2(2,1);
-    cout << f1 << " * " << f2 <<" = " << f1 * f2 << endl;
-
-
-
-
+    fraccion f1(0,5);
+    cout << f1 << " / " << 9 <<" = " << f1 / 9 << endl;
+    
 }
