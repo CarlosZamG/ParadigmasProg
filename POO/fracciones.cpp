@@ -454,7 +454,26 @@ fraccion operator/(int z, fraccion f1){
 
 int main()
 {    
-    fraccion f1(0,5);
-    cout << f1 << " / " << 9 <<" = " << f1 / 9 << endl;
-    
+    fraccion f1(5,7);
+    fraccion f2(4,6);
+    int ent1 = 2, ent2 = 3; 
+    cout << "f1 = " << f1 << ", f2 = " << f2 << endl << endl;
+    //f2 ha sido simplificado
+    cout << "Suma de fracciones: " << f1 << " + " << f2 << " = " << f1 + f2 <<endl;
+    cout << "Suma de fracción y entero: " << f1 << " + " << ent1 << " = " << f1 + ent1 <<endl;
+    cout << "Suma de entero y fracción: " << ent2 << " + " << f2 << " = " <<  ent2 + f2 <<endl<<endl; 
+    cout << "-f1 = " << -f1;
+    cout << ", -f2 = " << -f2 << endl << endl;
+    cout << "Resta de fracciones: " << endl << f1 << " - " << f2 << " = " << f1 - f2 <<endl;
+    cout << f2 << " - " << f1 << " = " << f2 - f1 <<endl;
+    cout << "Resta de fracciones y enteros: " << endl << ent1 << " - " << f2 << " = " << ent1 - f2 <<endl;
+    cout << f1 << " - " << ent2 << " = " << f1 - ent2 <<endl<<endl;
+    cout << "Multiplicación de fracciones: " << f1 << " * " << f2 << " = " << f1 * f2 <<endl;
+    cout << "Multiplicación de fracción y entero: " << f1 << " * " << ent1 << " = " << f1 * ent1 <<endl;
+    cout << "Multiplicación de entero y fracción: " << ent2 << " * " << f2 << " = " <<  ent2 * f2 <<endl<<endl;
+    cout << "División de fracciones: " << endl << f1 << " / " << f2 << " = " << f1 / f2 <<endl;
+    cout << f2 << " / " << f1 << " = " << f2 / f1 <<endl;
+    cout << "División de fracciones y enteros: " << endl << ent1 << " / " << f2 << " = " << ent1 / f2 <<endl;
+    cout << f1 << " / " << ent2 << " = " << f1 / ent2 <<endl<<endl;
+
 }
