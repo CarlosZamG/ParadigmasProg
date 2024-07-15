@@ -52,7 +52,7 @@ En 1967, Gene Amdahl se dedicó a estudiar una pregunta muy importante: ***¿Qu�
 
 Entonces el *speedup* obtenido al usar *N* nodos está acotado superiormente por:
 
-$$\text{\textit{speedup}}_N = \frac{t_{seq}}{t_{par}} = \frac{T}{(1-\alpha)T+\frac{\alpha\cdot T}{N}}=\frac{1}{1-\alpha+\frac{\alpha}{N}}$$
+$$\text{\textit{speedup}}_N=\frac{t_{seq}}{t_{par}}=\frac{T}{(1-\alpha)T+\frac{\alpha\cdot T}{N}}=\frac{1}{1-\alpha+\frac{\alpha}{N}}$$
 
 La fórmula anterior es la cota superior ya que estamos ignorando el costo de comunicación o coordinación. Así podemos obtener el *speedup* máximo posible al calcular el límite cuando $N\rightarrow\infty$:
 
