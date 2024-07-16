@@ -63,3 +63,29 @@ En la siguiente gráfica podemos visualizar la **Ley de Amdahl** para diferentes
 ![](./images/amdahl.svg)
 
 Podemos ver que incluso para valores muy buenos de $\alpha$, como por ejemplo $\alpha=0.9$, el máximo  valor de *speedup* es bajo, ya que su cota superior es $\frac{1}{1-0.9} = 10$.
+
+## Ley de Gustafson-Barsis
+
+Dos décadas después de que Amdahl publicara su ley, Gustafson y Barsis decidieron abordar el problema de una forma diferente: Un programa en paralelo hace más que acelerar la ejecución de un programa secuencial, puede solucionar instancias **más grandes** del problema. Así que en vez de comparar lo que un programa paralelo puede hacer respecto a uno secuencial, podemos estudiar como se comporta el programa secuencial si se le pide resolver el mismo problema que un programa paralelo puede resolver.
+
+Hagamos las siguientes suposiciones.
+1. Tenemos una aplicación paralela que se ejecuta en tiempo $T$ en $N$ CPUs.
+2. La aplicación ocupa $0\leq\alpha\leq1$  del tiempo ejecutándose en todas las máquinas, el resto del tiempo $1-\alpha$ se ejecuta secuencialmente.
+
+Entonces resolver el problema de forma secuencial requeriría el siguiente tiempo total:
+
+$$t_{seq}=(1-\alpha)T+\alpha\cdot T\cdot N$$
+
+debido a que la parte en paralelo requeriría ser hecha en secuencial.
+
+Así, tenemos el *speedup*:
+
+$$\text{\textit{speedup}}=\frac{t_{seq}}{t_{par}}=(1-\alpha)+\alpha\cdot N$$
+
+Con una *eficiencia*:
+
+$$\text{\textit{eficiencia}}=\frac{\text{\textit{speedup}}}{N}=\frac{(1-\alpha)}{N}+\alpha$$
+
+En la siguiente gráfica podemos ver la **Ley de Gustafson-Barsis** para diferentes de $\alpha$:
+
+![](./images/gustafson-barsis.svg)
