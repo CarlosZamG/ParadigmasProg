@@ -12,6 +12,8 @@ Podemos distinguir los patrones de estructura de un programa en paralelo en 2 gr
     - *Fork/Join.*
     - Paralelización de bucles.
 
+![](./images/patrones_estructura.drawio.svg)
+
 ### Un único programa, múltiples datos.
 
 En este patrón, todos los nodos ejecutan el mismo programa, sin embargo puede ser que apliquen las mismas operaciones a diferentes datos o sigan diferentes flujos de ejecución dentro del programa. La estructura típica de un programa que sigue este patrón incluye los siguientes pasos:
