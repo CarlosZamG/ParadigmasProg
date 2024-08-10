@@ -37,7 +37,7 @@ Hola desde el proceso hijo (el proceso nuevo) con id: 8771
 
 Al momento de llamar a la función `fork()`, se crea una copia exacta de la memoria del proceso, incluyendo el código y los datos tal y como estaban al momento de la llamada. Comúnmente suele decir que el proceso original es el proceso *padre* mientras que la copia es el proceso *hijo*.
 
-La función fork devuelve un entero según sea el caso:
+La función `fork()` devuelve un entero según sea el caso:
 - `-1` en caso de que haya ocurrido un error.
 - `0` para el nuevo proceso.
 - El identificador del proceso hijo para el proceso original.
