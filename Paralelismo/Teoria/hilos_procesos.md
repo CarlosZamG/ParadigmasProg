@@ -40,6 +40,8 @@ La función `fork()` devuelve un entero según sea el caso:
 
 Esto último nos permite diferenciar entre los procesos y ejecutar diferentes instrucciones para cada uno.
 
+**NOTA**: Cada proceso tiene un único identificador que podemos obtener con la función `getpid()`.
+
 ## Hilos
 
 El ***Scheduler*** es el proceso que se encarga de asignar los recursos del sistema para desempeñar las tareas.
