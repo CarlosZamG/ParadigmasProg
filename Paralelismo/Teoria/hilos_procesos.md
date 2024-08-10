@@ -1,12 +1,8 @@
 # Hilos vs Procesos
 
-**Definiciones:**
+## Procesos
 
-1. Un **proceso** es un programa en ejecución, es decir, la entidad del sistema operativo que encapsula el código, los datos, recursos y el estado de ejecución requerido por el sistema operativo para manejar el programa.
-
-2. El *Scheduler* es el proceso que se encarga de asignar los recursos del sistema para desempeñar las tareas.
-
-3. Un **hilo** es la unidad más pequeña de instrucciones que puede ser manejada por el *Scheduler*. Un proceso puede tener uno o múltiples hilos que pueden compartir algunos recursos, sin embargo un hilo solo puede estar ligado a un único proceso. Todo proceso tiene **al menos** un hilo.
+Un **proceso** es un programa en ejecución, es decir, la entidad del sistema operativo que encapsula el código, los datos, recursos y el estado de ejecución requerido por el sistema operativo para manejar el programa.
 
 Veamos ejemplos en código de cómo usar procesos en **Linux**:
 
@@ -44,3 +40,8 @@ La función `fork()` devuelve un entero según sea el caso:
 
 Esto último nos permite diferenciar entre los procesos y ejecutar diferentes instrucciones para cada uno.
 
+## Hilos
+
+El ***Scheduler*** es el proceso que se encarga de asignar los recursos del sistema para desempeñar las tareas.
+
+Un **hilo** es la unidad más pequeña de instrucciones que puede ser manejada por el *Scheduler*. Un proceso puede tener uno o múltiples hilos que pueden compartir algunos recursos, sin embargo un hilo solo puede estar ligado a un único proceso. Todo proceso tiene **al menos** un hilo.
