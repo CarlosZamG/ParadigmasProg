@@ -2,7 +2,7 @@
 
 **Definiciones:**
 
-1. Un **proceso** es un programa en ejecución, es decir, la entidad del sistema operativo que encapsula el código, los datos, recursos y el estado de ejecución requerido por el sistem operativo para manejar el programa.
+1. Un **proceso** es un programa en ejecución, es decir, la entidad del sistema operativo que encapsula el código, los datos, recursos y el estado de ejecución requerido por el sistema operativo para manejar el programa.
 
 2. El *Scheduler* es el proceso que se encarga de asignar los recursos del sistema para desempeñar las tareas.
 
