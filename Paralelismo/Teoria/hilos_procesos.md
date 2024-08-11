@@ -139,6 +139,6 @@ Devuelve un entero y recibe dos argumentos:
 1. Una variable de tipo `pthread_t`.
 2. Un puntero para obtener lo que retorna la función que hilo ejecutó.
 
-## Diferencia entre hilos y procesos.
+## Diferencias entre hilos y procesos.
 
 
