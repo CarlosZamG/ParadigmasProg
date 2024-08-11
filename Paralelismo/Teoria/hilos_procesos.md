@@ -52,3 +52,93 @@ Los hilos alivian la carga de trabajo asociada al proceso de *bifurcación* copi
 
 ### ¿Cuándo es conveniente usar hilos?
 
+- **Tareas en segundo plano**: Las aplicaciones interactivas pueden utilizar hilos para realizar tareas en segundo plano, es decir, tareas que no requieren la interacción del usuario y, al mismo tiempo, seguir respondiendo a sus peticiones.
+
+- **Procesamiento asíncrono**: Enviar una solicitud a un servidor a través de una red implica una latencia considerable. Al generar un subproceso para gestionar la transacción con el servidor de forma asíncrona (es decir, sin esperar la respuesta), una aplicación puede seguir realizando un trabajo útil, lo que mejora el rendimiento y la utilización de los recursos.
+
+- **Videojuegos**: Una característica típica de los juegos es la necesidad de realizar concurrentemente una gran colección de tareas periódicas. Estas tareas incluyen el redibujado de la pantalla, la reproducción del sonido, la detección de la entrada del usuario y la creación de estrategias. Estas tareas no tienen por qué ejecutarse con la misma frecuencia que el resto, y ponerlas dentro del mismo bucle y asegurarse de que pueden ejecutarse a la velocidad de la recarga de la pantalla es un requisito extremo que sólo puede satisfacerse con una mayor complejidad del programa. Asignar las distintas tareas a diferentes hilos permite obtener un código mucho mejor estructurado que, además, es más fácil de mantener.
+
+Veamos un ejemplo de cómo usar hilos en Linux con **pThreads**, una librería para manejar hilos:
+
+El siguiente código puede ser encontrado en `/Paralelismo/nuevo/restaurant.c`, en este podemos pensar un hilo como un chef de un restaurante cuya tarea es cocinar platillos. Cada hilo es un chef que cocina independientemente de lo que estén realizando los otros chefs.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+
+void* work(void *data){
+    
+    printf("El chef está cocinando\n");
+    sleep(2);
+    printf("Orden lista\n");
+    return NULL;
+}
+
+int main(){
+    
+    //Restaurante en secuencial (un solo cocinero)
+    printf("\nUn cocinero\n\n");
+    work(NULL);
+    work(NULL);
+
+    // Restaurante con hilos en paralelo (múltiples cocineros)
+    printf("\nVarios cocineros\n\n");
+    pthread_t chef1, chef2;
+
+    if (pthread_create(&chef1, NULL, work, NULL) != 0) return EXIT_FAILURE;
+    if (pthread_create(&chef2, NULL, work, NULL)) return EXIT_FAILURE;
+
+    if (pthread_join(chef1, NULL) != 0) return EXIT_FAILURE;
+    if (pthread_join(chef2, NULL)) return EXIT_FAILURE;
+
+}
+```
+
+Con la siguiente salida:
+
+```sh
+
+Un cocinero
+
+El chef está cocinando
+Orden lista
+El chef está cocinando
+Orden lista
+
+Varios cocineros
+
+El chef está cocinando
+El chef está cocinando
+Orden lista
+Orden lista
+```
+Notemos que lo primero que tenemos que hacer es incluir el archivo de cabecera `pthread.h`.
+
+Después de eso, cuando creamos un hilo con **pThreads**, este ejecuta una función, que en este caso es la función `work()`. Luego declaramos una variable del tipo `pthread_t` que usaremos con la función `pthread_create()`. Esta función tiene la siguiente estructura:
+
+```c
+int pthread_create(pthread_t *newthread, pthread_attr_t *attr, void *(*function)(void *), void *arg)
+```
+
+Devuelve un entero y recibe cuatro argumentos:
+
+1. Un apuntador a una variable de tipo `pthread_t`.
+2. La siguiente variable son atributos para configurar cosas que podemos hacer con los hilos.
+3. La función que el hilo va a ejecutar.
+4. Los argumentos que se le deben pasar a la función.
+
+Por último, usualmente queremos esperar a que los hilos terminen de ejecutar su tarea. Para eso utilizaremos la función `pthread_join()` que tiene la siguiente estructura:
+
+```c
+int pthread_join(pthread_t thread, void **return)
+```
+Devuelve un entero y recibe dos argumentos:
+
+1. Una variable de tipo `pthread_t`.
+2. Un puntero para obtener lo que retorna la función que hilo ejecutó.
+
+## Diferencia entre hilos y procesos.
+
+
