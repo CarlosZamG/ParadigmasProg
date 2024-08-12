@@ -137,8 +137,155 @@ int pthread_join(pthread_t thread, void **return)
 Devuelve un entero y recibe dos argumentos:
 
 1. Una variable de tipo `pthread_t`.
-2. Un puntero para obtener lo que retorna la función que hilo ejecutó.
+2. Un puntero para obtener lo que retorna la función que el hilo ejecutó.
 
 ## Diferencias entre hilos y procesos.
 
+La primera diferencia es que podemos tener múltiples hilos dentro de un proceso, pero un hilo no puede pertenecer a múltiples procesos. Otra diferencia importante es que cuando trabajamos con procesos, al momento de bifurcar con la función `fork()`, duplicamos todas las variables del proceso *padre* en el proceso *hijo*, por lo que podemos manejar las varibles de forma independiente entre procesos. Mientras que al trabajar con hilos tenemos las variables en un espacio de memoria compartido, por lo que todos los hilos pueden acceder a todas las variables. Veamos ejemplos de esto:
 
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include<sys/wait.h>
+
+int main(){
+    
+    int number = 0;
+
+    int id = fork();
+    
+    if (id == -1){
+        printf("Ocurrió un error\n");
+    }else if (id == 0){
+        number = number + 50;
+        printf("Hola desde el proceso hijo (el proceso nuevo), el valor de number es: %d\n", number);
+    }else{
+        wait(0);
+        sleep(2);
+        number = number + 50;
+        printf("Hola desde el proceso padre (el proceso original), el valor de number es: %d\n", number);
+    }
+}
+```
+
+La función `wait()` bloquea la ejecución del proceso *padre* hasta que el proceso *hijo* termine. Considerando esto **¿cuál será el valor de `number` al momento de imprimirlo en el proceso *padre*?** Aunque podríamos pensar que tendrá un valor de `100` ya que se realizan dos incrementos de `50`, la realidad es que como estamos **bifurcando procesos**, cada uno tiene su respectiva copia, por lo que la salida es la siguiente:
+
+```sh
+Hola desde el proceso hijo (el proceso nuevo), el valor de number es: 50
+Hola desde el proceso padre (el proceso original), el valor de number es: 50
+```
+
+Ahora veamos un ejemplo similar pero con hilos:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+
+int number = 0;
+
+
+void* work1(void *data){
+    
+    number = number + 50;
+    printf("El valor de number es: %d\n", number);
+    return NULL;
+}
+
+void* work2(void *data){
+    
+    sleep(2);
+    number = number + 50;
+    printf("El valor de number es: %d\n", number);
+    return NULL;
+}
+
+
+int main(){
+    
+
+    pthread_t t1, t2;
+
+    if (pthread_create(&t1, NULL, work1, NULL) != 0) return EXIT_FAILURE;
+    if (pthread_create(&t2, NULL, work2, NULL)) return EXIT_FAILURE;
+
+    if (pthread_join(t1, NULL) != 0) return EXIT_FAILURE;
+    if (pthread_join(t2, NULL)) return EXIT_FAILURE;
+
+}
+```
+
+Salida:
+```sh
+El valor de number es: 50
+El valor de number es: 100
+```
+
+Lo que sucede es que la variable `number` es compartida por los dos hilos, así que el incremento que estamos haciendo en `work1()` también es considerado por el otro hilo, cosa que se refleja al imprimir en `work2()`. 
+
+Podemos ampliar nuestro ejemplo en `restaurant.c` para también trabajar con procesos. Si un hilo es un cocinero, ¿Qué es un proceso en esta analogía? Pues un proceso lo podemos ver como un restaurante, es decir, al momento de trabajar con múltiples procesos, podemos pensarlos como múltiples restaurantes, cada uno con sus propios cocineros (hilos):
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+
+char *location;
+
+void* work(void *data){
+    
+    printf("El chef está cocinando en el restaurante con id: %d\n", getpid());
+    sleep(2);
+    printf("Orden lista en el restaurante con id: %d\n", getpid());
+    return NULL;
+}
+
+int main(){
+
+    int id = fork();
+    if (id){
+        // Estamos en el proceso original
+        location = "Tlalnepantla";
+    }else{
+        // Estamos en el nuevo proceso
+        location = "Toluca";
+    }
+
+    // Restaurante con hilos en paralelo (múltiples cocineros)
+    printf("\nVarios cocineros trabajando en %s\n\n", location);
+    pthread_t chef1, chef2;
+
+    if (pthread_create(&chef1, NULL, work, NULL) != 0) return EXIT_FAILURE;
+    if (pthread_create(&chef2, NULL, work, NULL)) return EXIT_FAILURE;
+
+    if (pthread_join(chef1, NULL) != 0) return EXIT_FAILURE;
+    if (pthread_join(chef2, NULL)) return EXIT_FAILURE;
+
+    return EXIT_SUCCESS;
+
+}
+```
+
+Salida:
+```sh
+
+Varios cocineros trabajando en Tlalnepantla
+
+
+Varios cocineros trabajando en Toluca
+
+El chef está cocinando en el restaurante con id: 7269
+El chef está cocinando en el restaurante con id: 7269
+El chef está cocinando en el restaurante con id: 7270
+El chef está cocinando en el restaurante con id: 7270
+Orden lista en el restaurante con id: 7269
+Orden lista en el restaurante con id: 7270
+Orden lista en el restaurante con id: 7269
+Orden lista en el restaurante con id: 7270
+
+```
+
+Todos estos códigos se encuentran en la carpeta `Paralelismo/nuevo`
