@@ -70,3 +70,7 @@ Tenemos la siguiente salida:
 10000
 ```
 
+En el código anterior (ubicado en `Paralelismo/nuevo/race_conditons.c`) podemos ver que cada hilo incrementa el valor de la variable `number` en uno, debido a que el valor se inicializa en `0` y creamos 10000 hilos, esperaríamos a que el valor final de `number` sea `10000`. Sin emabargo esto no simepre se cumple, a veces tenemos un valor menor como `9996` o `9999`. Esto se debe a que los hilos están modificando el valor de un recurso compartido: nuestra variable `number`, por lo que en algunas ejecuciones se pierde la coherencia ya que los hilos trabajan sobre la varible al mismo tiempo.
+
+## Exclusión mutua
+
