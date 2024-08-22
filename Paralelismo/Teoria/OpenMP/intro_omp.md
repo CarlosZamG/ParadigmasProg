@@ -111,10 +111,154 @@ Podemos ver que la variable `a` es compartida, ya que va guardando la suma acumu
 
 ## Directivas de sincronización
 
-Para utilizar variables compartidas en un programa paralelo de forma correcta, necesitamos una forma de coordinar los cambios que se hacen a dichas variables. OpenMP provee directivas de sincronización que sirven para dos propósitos:**exclusión mutua** y **sincronización de eventos**.
+Para utilizar variables compartidas en un programa paralelo de forma correcta, necesitamos una forma de coordinar los cambios que se hacen a dichas variables. OpenMP provee directivas de sincronización que sirven para dos propósitos:**exclusión mutua** y **sincronización de eventos**
 
 - `critical`:
+
+Pensemos en el siguiente fragemento de código con OpenMP:
+
+```c
+    int x = 0;
+    int y = 0;
+    
+    #pragma omp parallel num_threads(4)
+    {
+        x += y++;
+    }
+
+    printf("x: %d | y: %d\n", x, y);
+```
+
+Lo que esperaríamos al tener 4 hilos y con `x` y `y` variables compartidas es lo siguiente:
+
+| Hilos | x al inicio| y al inicio | x al final | y al final|
+|-------|:----------:|:-----------:|:----------:|:---------:|
+| $n_0$ | 0          | 0           | 0          | 1         |
+| $n_1$ | 0          | 1           | 1          | 2         |
+| $n_2$ | 1          | 2           | 3          | 3         |
+| $n_3$ | 3          | 3           | 6          | 4         |
+
+Por lo que la impresión nos debería de dar lo siguiente:
+
+```sh
+x: 6 | y: 4
+```
+
+Sin embargo, la realidad es que al ejecutarlo múltiples veces con el comando `for run in {1..5}; do ./synchro_examples; done` vemos que sucede una condición de carrera:
+
+```sh
+x: 3 | y: 3
+x: 2 | y: 2
+x: 3 | y: 3
+x: 6 | y: 4
+x: 3 | y: 3
+```
+La directiva `critical` permite que sólo un hilo pueda ejecutar un bloque de instrucciones. Su sintaxis de instrucciones es la siguiente:
+
+```c
+#pragma omp critical 
+{
+    // Instrucciones
+}
+```
+
+Al utilizar esta directiva en nuestro código creamos una sección crítica, es decir, una sección que será ejecutada por un hilo a la vez.
+
+Veamos como podemos usar `critical` en nuestro código para solucionar la condición de carrera:
+
+```c
+    x = 0;
+    y = 0;
+
+    printf("\nCon critical\n");
+
+    #pragma omp parallel num_threads(4)
+    {
+        #pragma omp critical
+        {
+            x += y++;
+        }
+        
+    }
+```
+
+Al ejecutar múltiples veces, podemos ver que funciona correctamente:
+
+```sh
+Con critical
+x: 6 | y: 4
+
+Con critical
+x: 6 | y: 4
+
+Con critical
+x: 6 | y: 4
+
+Con critical
+x: 6 | y: 4
+
+Con critical
+x: 6 | y: 4
+```
+
 - `atomic`:
+
+Esta directiva es una versión ligera de `critical` que utiliza instrucciones específicas de la plataforma de la máquina en la que se está ejecutando para acelerar la ejecución de secciones críticas de una sola instrucción. Debido a que la instrucción debe estar ligada a una instrucción de la CPU, las instrucciones que funcionan correctamente con `atomic` son limitadas:
+
+1. `x++;`
+2. `++x;`
+3. `x--;`
+4. `--x;`
+5. `x binop= expr;`
+6. `x = x binop expr;`
+7. `x = expr binop x;`
+
+Donde `x` es una variable de tipo escalar; `binop` puede ser uno de los siguientes:
+
+`+`,`-`,`*`,`/`,`&`,`^`,`|`,`<<`,o `>>`
+
+y `expr` es una expresión de tipo escalar.
+
+Veamos lo que sucede al usar `atomic` en nuestro ejemplo:
+
+```c
+    x = 0;
+    y = 0;
+
+    printf("\nCon atomic\n");
+
+    #pragma omp parallel num_threads(4)
+    {
+        #pragma omp atomic
+            x += y++;
+        
+    }
+```
+
+Su salida al ejecutarlo varias veces:
+```sh
+Con atomic
+x: 1 | y: 2
+
+Con atomic
+x: 3 | y: 3
+
+Con atomic
+x: 4 | y: 3
+
+Con atomic
+x: 3 | y: 3
+
+Con atomic
+x: 3 | y: 3
+```
+
+**¿Qué es lo que está pasando?** Pues aunque el cambio de la variable `x` sí sucede como una región crítica, el cambio de la variable compartida `y` sufre una condición de carrera, lo que afecta el funcionamiento del programa; para este tipo de expresiones debemos usar `critical`.
+
 - `barrier`:
+
+Esta directiva le indica a los hilos el momento preciso para empezar o continuar con cierto trabajo. 
+
 - `single`:
+
 - `master`:
